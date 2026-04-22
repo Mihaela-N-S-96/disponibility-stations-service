@@ -1,0 +1,9 @@
+server:
+  port: 8080
+
+ssh:
+  port: 22
+  host: 10.21.80.6
+  user: sysop-rognss
+  password: sysop-rognss
+  path: gps_dbase/
