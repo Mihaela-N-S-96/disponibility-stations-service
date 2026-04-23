@@ -3,7 +3,7 @@ package station.disponibility.cron.job.config;
 import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
-import lombok.AllArgsConstructor;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import station.disponibility.cron.job.service.StationDisponibilityService;
 
@@ -18,24 +18,27 @@ public class SshConfig {
         this.service = service;
     }
 
-    public Session connectAndExecute() throws JSchException {
+    @Scheduled(cron = "0 0 12 * * *")
+    public void connectAndExecute() throws JSchException {
         Session session = null;
 
         JSch jsch = new JSch();
         try {
-            session = jsch.getSession(sshResourcesConfig.getUser(), sshResourcesConfig.getHost(), sshResourcesConfig.getPort());
+            session = jsch.getSession(
+                    sshResourcesConfig.getUser(),
+                    sshResourcesConfig.getHost(),
+                    sshResourcesConfig.getPort());
             session.setPassword(sshResourcesConfig.getPassword());
 
             session.setConfig("StrictHostKeyChecking", "no");
 
             session.connect(5000);
             service.findDisponibility(session);
-            session.disconnect();
-            System.out.println("Succes!");
         } catch (Exception ex) {
             System.out.println("exception on connection!");
+        } finally {
+            session.disconnect();
         }
-        return session;
 
     }
 }
