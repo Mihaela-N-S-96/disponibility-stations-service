@@ -2,8 +2,13 @@ server:
   port: 8080
 spring:
   datasource:
-#    url: jdbc:mysql://localhost:3306/disertatie?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC
-    url: jdbc:mysql://localhost:3306/disertatie?serverTimezone=UTC
+#    local
+#    url: jdbc:mysql://localhost:3306/disertatie?serverTimezone=UTC
+#    username: root
+#    password:
+
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/disertatie?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC
     username: root
     password:
 ssh:
