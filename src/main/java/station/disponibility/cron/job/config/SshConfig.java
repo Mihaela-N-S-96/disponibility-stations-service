@@ -30,6 +30,7 @@ public class SshConfig {
 
             session.connect(5000);
             service.findDisponibility(session);
+            session.disconnect();
             System.out.println("Succes!");
         } catch (Exception ex) {
             System.out.println("exception on connection!");

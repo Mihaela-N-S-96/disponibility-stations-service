@@ -22,14 +22,14 @@ public class StationDisponibilityService {
     public void findDisponibility(Session session) {
         for (Stations station : Stations.values()) {
             String stationPath = getStationPath(station.name());
-            System.out.println(stationPath);
 
            if(fileExists(session, stationPath)){
                StatiiGnss statiiGnss = new StatiiGnss();
                statiiGnss.setCod_statie(station.name());
                statiiGnss.setData_of(LocalDate.now());
-               statiiGnss.setNume_doc(stationPath.substring(stationPath));
-               stationDisponibilityRepository.save()
+               statiiGnss.setNume_doc(stationPath.substring(stationPath.length()-41));
+//               System.out.println(statiiGnss.getNume_doc());
+               stationDisponibilityRepository.save(statiiGnss);
            }
         }
     }
@@ -38,9 +38,11 @@ public class StationDisponibilityService {
         StationDto stationDto = new StationDto(LocalDate.now());
         String station = stationName.concat("00ROU_R_").concat(stationDto.getYear().toString())
                 .concat(String.format("%03d",stationDto.getDay()))
-                .concat("0000_01D_30S_MO.rnx.gz");
+//                .concat("108")
+                .concat("0000_01D_30S_MO.crx.gz");
         return sshResourcesConfig.getPath().concat(stationDto.getYear().toString()).concat("/")
                 .concat(String.format("%03d", stationDto.getDay()))
+//                .concat("108")
                 .concat("/")
                 .concat(station);
         //ARYB00ROU_R_20260010000_01D_30S_MO.crx.gz
