@@ -18,7 +18,7 @@ public class SshConfig {
         this.service = service;
     }
 
-    @Scheduled(cron = "0 0 12 * * *")
+    @Scheduled(cron = "0 */2 * * * *")
     public void connectAndExecute() throws JSchException {
         Session session = null;
 
