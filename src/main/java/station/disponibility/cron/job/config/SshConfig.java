@@ -32,10 +32,10 @@ public class SshConfig {
 
             session.setConfig("StrictHostKeyChecking", "no");
 
-            session.connect(5000);
+            session.connect(10000);
             service.findDisponibility(session);
         } catch (Exception ex) {
-            System.out.println("exception on connection!"+ ex.getMessage()+ " - "+ ex + " - "+ex.getCause());
+            System.out.println("exception on connection!"+ ex.getMessage()+ " - "+ ex + " - "+ex.getStackTrace());
         } finally {
             session.disconnect();
         }
