@@ -35,7 +35,7 @@ public class SshConfig {
             session.connect(5000);
             service.findDisponibility(session);
         } catch (Exception ex) {
-            System.out.println("exception on connection!");
+            System.out.println("exception on connection!"+ ex.getMessage()+ " - "+ ex + " - "+ex.getCause());
         } finally {
             session.disconnect();
         }
