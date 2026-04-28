@@ -20,35 +20,35 @@ public class StationDisponibilityService {
     private StationDisponibilityRepository stationDisponibilityRepository;
 
     public void findDisponibility(Session session) {
-        for (Stations station : Stations.values()) {
-            String stationPath = getStationPath(station.name());
+        for(int i=1; i<=118; i++) { //TODO: this will be deleted
 
-           if(fileExists(session, stationPath)){
-               StatiiGnss statiiGnss = new StatiiGnss();
-               statiiGnss.setCod_statie(station.name());
-               statiiGnss.setData_of(LocalDate.now());
-               statiiGnss.setNume_doc(stationPath.substring(stationPath.length()-41));
-               System.out.println(statiiGnss.getNume_doc());
-               stationDisponibilityRepository.save(statiiGnss);
-           }else {
-               System.out.println("nup");
-           }
+            for (Stations station : Stations.values()) {
+                String stationPath = getStationPath(station.name(), i);
+
+                if (fileExists(session, stationPath)) {
+                    StatiiGnss statiiGnss = new StatiiGnss();
+                    statiiGnss.setCod_statie(station.name());
+//                    statiiGnss.setData_of(LocalDate.now());
+                    statiiGnss.setData_of(LocalDate.ofYearDay(2026, i));
+                    statiiGnss.setNume_doc(stationPath.substring(stationPath.length() - 41));
+//                    System.out.println(statiiGnss.getNume_doc());
+                    stationDisponibilityRepository.save(statiiGnss);
+                }
+            }
         }
     }
 
-    private String getStationPath(String stationName) {
+    private String getStationPath(String stationName, int nmbOfDay) {
         StationDto stationDto = new StationDto(LocalDate.now());
         String station = stationName.concat("00ROU_R_").concat(stationDto.getYear().toString())
-                .concat(String.format("%03d",stationDto.getDay()))
-//                .concat("108")
+//                .concat(String.format("%03d",stationDto.getDay()))
+                .concat(String.format("%03d",nmbOfDay))
                 .concat("0000_01D_30S_MO.crx.gz");
         return sshResourcesConfig.getPath().concat(stationDto.getYear().toString()).concat("/")
-                .concat(String.format("%03d", stationDto.getDay()))
-//                .concat("108")
+//                .concat(String.format("%03d", stationDto.getDay()))
+                .concat(String.format("%03d",nmbOfDay))
                 .concat("/")
                 .concat(station);
-        //ARYB00ROU_R_20260010000_01D_30S_MO.crx.gz
-        // ARYB00ROU_R_20260010000_01D_30S_MO.rnx.gz
     }
 
     public boolean fileExists(Session session, String path) {
@@ -57,7 +57,7 @@ public class StationDisponibilityService {
             channelSftp = (ChannelSftp) session.openChannel("sftp");
             channelSftp.connect();
 
-            channelSftp.stat(path); // dacă nu există → aruncă excepție
+            channelSftp.stat(path);
             return true;
 
         } catch (SftpException e) {
