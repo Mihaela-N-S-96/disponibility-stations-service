@@ -21,7 +21,7 @@ public class SshConfig {
     @Scheduled(cron = "0 */2 * * * *")
     public void connectAndExecute() throws JSchException {
         Session session = null;
-
+        System.out.println("start");
         JSch jsch = new JSch();
         try {
             session = jsch.getSession(

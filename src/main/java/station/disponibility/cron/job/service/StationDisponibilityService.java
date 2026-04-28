@@ -28,8 +28,10 @@ public class StationDisponibilityService {
                statiiGnss.setCod_statie(station.name());
                statiiGnss.setData_of(LocalDate.now());
                statiiGnss.setNume_doc(stationPath.substring(stationPath.length()-41));
-//               System.out.println(statiiGnss.getNume_doc());
+               System.out.println(statiiGnss.getNume_doc());
                stationDisponibilityRepository.save(statiiGnss);
+           }else {
+               System.out.println("nup");
            }
         }
     }
