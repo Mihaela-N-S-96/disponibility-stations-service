@@ -20,20 +20,25 @@ public class StationDisponibilityService {
     private StationDisponibilityRepository stationDisponibilityRepository;
 
     public void findDisponibility(Session session) {
-        for(int i=1; i<=118; i++) { //TODO: this will be deleted
+        for (int i = 109; i <= 118; i++) { //TODO: this will be deleted
+            if (verifyBasePath(LocalDate.now().getYear(), i) != null) {
+                for (Stations station : Stations.values()) {
+                    String stationPath = getStationPath(station.name(), i);
 
-            for (Stations station : Stations.values()) {
-                String stationPath = getStationPath(station.name(), i);
-
-                if (fileExists(session, stationPath)) {
-                    StatiiGnss statiiGnss = new StatiiGnss();
-                    statiiGnss.setCod_statie(station.name());
+                    if (fileExists(session, stationPath)) {
+                        StatiiGnss statiiGnss = new StatiiGnss();
+                        statiiGnss.setCod_statie(station.name());
 //                    statiiGnss.setData_of(LocalDate.now());
-                    statiiGnss.setData_of(LocalDate.ofYearDay(2026, i));
-                    statiiGnss.setNume_doc(stationPath.substring(stationPath.length() - 41));
+                        statiiGnss.setData_of(LocalDate.ofYearDay(2026, i));
+                        statiiGnss.setNume_doc(stationPath.substring(stationPath.length() - 41));
 //                    System.out.println(statiiGnss.getNume_doc());
-                    stationDisponibilityRepository.save(statiiGnss);
+                        stationDisponibilityRepository.save(statiiGnss);
+                    } else {
+                        System.out.println("ziua " + LocalDate.ofYearDay(2026, i) + " nu exista! " + i);
+                    }
                 }
+            } else {
+                System.out.println("This day: "+i+" was not uploaded yet! ");
             }
         }
     }
@@ -42,13 +47,20 @@ public class StationDisponibilityService {
         StationDto stationDto = new StationDto(LocalDate.now());
         String station = stationName.concat("00ROU_R_").concat(stationDto.getYear().toString())
 //                .concat(String.format("%03d",stationDto.getDay()))
-                .concat(String.format("%03d",nmbOfDay))
+                .concat(String.format("%03d", nmbOfDay))
                 .concat("0000_01D_30S_MO.crx.gz");
         return sshResourcesConfig.getPath().concat(stationDto.getYear().toString()).concat("/")
 //                .concat(String.format("%03d", stationDto.getDay()))
-                .concat(String.format("%03d",nmbOfDay))
+                .concat(String.format("%03d", nmbOfDay))
                 .concat("/")
                 .concat(station);
+    }
+
+    private String verifyBasePath(int year, int nmbOfDay) {
+        System.out.println(sshResourcesConfig.getPath().concat(String.valueOf(year)).concat("/")
+                .concat(String.format("%03d", nmbOfDay)));
+        return sshResourcesConfig.getPath().concat(String.valueOf(year)).concat("/")
+                .concat(String.format("%03d", nmbOfDay));
     }
 
     public boolean fileExists(Session session, String path) {
