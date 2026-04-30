@@ -11,7 +11,9 @@ import station.disponibility.cron.job.dto.StationDto;
 import station.disponibility.cron.job.dto.Stations;
 import station.disponibility.cron.job.repository.StationDisponibilityRepository;
 
+import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.temporal.TemporalAdjusters;
 
 @Service
 @AllArgsConstructor
@@ -20,25 +22,28 @@ public class StationDisponibilityService {
     private StationDisponibilityRepository stationDisponibilityRepository;
 
     public void findDisponibility(Session session) {
-        for (int i = 109; i <= 118; i++) { //TODO: this will be deleted
-            if (verifyBasePath(LocalDate.now().getYear(), i) != null) {
+        LocalDate today = LocalDate.now();
+        LocalDate lastWednesday = today.with(TemporalAdjusters.previous(DayOfWeek.WEDNESDAY));
+        int startDay = lastWednesday.getDayOfYear();
+        int finDay = startDay + 7;
+
+        for (int i = 108; i <= 114; i++) {
+            if (verifyBasePath(today.getYear(), i) != null) {
                 for (Stations station : Stations.values()) {
                     String stationPath = getStationPath(station.name(), i);
 
                     if (fileExists(session, stationPath)) {
                         StatiiGnss statiiGnss = new StatiiGnss();
-                        statiiGnss.setCod_statie(station.name());
-//                    statiiGnss.setData_of(LocalDate.now());
-                        statiiGnss.setData_of(LocalDate.ofYearDay(2026, i));
+                        statiiGnss.setCodStatie(station.name());
+                        statiiGnss.setDataOf(LocalDate.ofYearDay(2026, i));
                         statiiGnss.setNume_doc(stationPath.substring(stationPath.length() - 41));
-//                    System.out.println(statiiGnss.getNume_doc());
-                        stationDisponibilityRepository.save(statiiGnss);
-                    } else {
-                        System.out.println("ziua " + LocalDate.ofYearDay(2026, i) + " nu exista! " + i);
+                        if (stationDisponibilityRepository.findByCodStatieAndDataOf(statiiGnss.getCodStatie(), statiiGnss.getDataOf()).isEmpty()) {
+                            stationDisponibilityRepository.save(statiiGnss);
+                        }
                     }
                 }
             } else {
-                System.out.println("This day: "+i+" was not uploaded yet! ");
+                System.out.println("This day: " + i + " was not uploaded yet! ");
             }
         }
     }

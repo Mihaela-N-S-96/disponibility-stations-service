@@ -1,9 +1,6 @@
 package station.disponibility.cron.job.dto;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.time.LocalDate;
 
 @Entity
@@ -11,9 +8,12 @@ public class StatiiGnss {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String cod_statie;
+    @Column(name = "cod_statie")
+    private String codStatie;
+
+    @Column(name = "data_of")
+    private LocalDate dataOf;
     private String nume_doc;
-    private LocalDate data_of;
 
     public Long getId() {
         return id;
@@ -23,12 +23,20 @@ public class StatiiGnss {
         this.id = id;
     }
 
-    public String getCod_statie() {
-        return cod_statie;
+    public String getCodStatie() {
+        return codStatie;
     }
 
-    public void setCod_statie(String cod_statie) {
-        this.cod_statie = cod_statie;
+    public void setCodStatie(String codStatie) {
+        this.codStatie = codStatie;
+    }
+
+    public LocalDate getDataOf() {
+        return dataOf;
+    }
+
+    public void setDataOf(LocalDate dataOf) {
+        this.dataOf = dataOf;
     }
 
     public String getNume_doc() {
@@ -37,13 +45,5 @@ public class StatiiGnss {
 
     public void setNume_doc(String nume_doc) {
         this.nume_doc = nume_doc;
-    }
-
-    public LocalDate getData_of() {
-        return data_of;
-    }
-
-    public void setData_of(LocalDate data_of) {
-        this.data_of = data_of;
     }
 }
