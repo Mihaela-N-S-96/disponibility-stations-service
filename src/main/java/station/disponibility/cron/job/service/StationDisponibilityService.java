@@ -27,7 +27,7 @@ public class StationDisponibilityService {
         int startDay = lastWednesday.getDayOfYear();
         int finDay = startDay + 7;
 
-        for (int i = 108; i <= 114; i++) {
+        for (int i = startDay; i <= finDay; i++) {
             if (verifyBasePath(today.getYear(), i) != null) {
                 for (Stations station : Stations.values()) {
                     String stationPath = getStationPath(station.name(), i);
